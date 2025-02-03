@@ -1,11 +1,7 @@
-import { AbiEvent } from "viem";
+import "dotenv/config";
 
-export const PING_EVENT_ABI: AbiEvent = {
-  anonymous: false,
-  inputs: [],
-  name: "Ping",
-  type: "event",
-};
+export const CONTRACT_ADDRESS = process.env
+  .PING_PONG_CONTRACT_ADDRESS as `0x${string}`;
 
 export const CONTRACT_ABI = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
