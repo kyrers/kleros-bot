@@ -1,6 +1,6 @@
+import "dotenv/config";
 import { createPublicClient, createWalletClient, Hex, http } from "viem";
 import { sepolia } from "viem/chains";
-import "dotenv/config";
 import { privateKeyToAccount } from "viem/accounts";
 
 const baseClientParameters = {

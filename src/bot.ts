@@ -2,15 +2,19 @@ import { CONTRACT_ABI, CONTRACT_ADDRESS } from "./constants";
 import { publicClient, walletClient } from "./clients";
 
 async function main() {
-  console.log("## Starting bot...");
+  console.log("## STARTING BOT...");
+
+  const startingBlock = await publicClient.getBlockNumber();
+  console.log("## LISTENING FROM BLOCK:", startingBlock);
 
   publicClient.watchContractEvent({
     address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     eventName: "Ping",
+    fromBlock: startingBlock,
     onLogs: async (logs) => {
       const pingTxHash = logs[0].transactionHash;
-      console.log("## DETECTED PING EVENT FROM TX:", pingTxHash);
+      console.log("## PING EMITTED:", pingTxHash);
 
       try {
         const { request } = await publicClient.simulateContract({
@@ -22,9 +26,9 @@ async function main() {
         });
 
         const hash = await walletClient.writeContract(request);
-        console.log(`## CALLED Pong FOR Ping ${pingTxHash}. PONG TX: ${hash}`);
+        console.log(`## CALLED PONG: \n PING: ${pingTxHash} \n PONG: ${hash}`);
       } catch (error) {
-        console.error(`## FAILED TO CALL Pong FOR Ping ${pingTxHash}:`, error);
+        console.error(`## FAILED TO CALL PONG FOR PING: ${pingTxHash}:`, error);
         throw error;
       }
     },
