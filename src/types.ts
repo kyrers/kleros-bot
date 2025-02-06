@@ -3,7 +3,8 @@ export enum PongStatus {
   FAILED = "failed",
 }
 
-interface PongState {
+export interface PongState {
+  txHash?: string;
   status: PongStatus;
   attempts: number;
 }

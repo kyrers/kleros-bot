@@ -44,6 +44,7 @@ export function hasPong(pingTxHash: `0x${string}`): boolean {
 
 export async function addPong(pingTxHash: `0x${string}`) {
   state.pending[pingTxHash] = {
+    txHash: undefined,
     status: PongStatus.PENDING,
     attempts: 0,
   };
@@ -52,12 +53,14 @@ export async function addPong(pingTxHash: `0x${string}`) {
 
 export async function updatePong(
   pingTxHash: `0x${string}`,
-  status: PongStatus
+  status: PongStatus,
+  pongTxHash?: `0x${string}`
 ) {
   if (!state.pending[pingTxHash]) {
     throw new Error(`## NO PING FOUND FOR HASH: ${pingTxHash}`);
   }
 
+  state.pending[pingTxHash].txHash = pongTxHash;
   state.pending[pingTxHash].status = status;
   state.pending[pingTxHash].attempts++;
   await saveState();
