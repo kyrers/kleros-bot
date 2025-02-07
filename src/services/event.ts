@@ -1,7 +1,13 @@
 import { Log } from "viem";
 import { publicClient } from "../clients";
 import { CONTRACT_ABI, CONTRACT_ADDRESS } from "../constants";
-import { addPong, hasPong, setLastBlockRead } from "../state";
+import {
+  addOrUpdatePong,
+  hasPending,
+  hasPong,
+  setLastBlockRead,
+} from "../state";
+import { sendPong } from "./transaction";
 
 async function handlePing(logs: Log[]) {
   const pingTxHash = logs[0].transactionHash as `0x${string}`;
@@ -13,7 +19,14 @@ async function handlePing(logs: Log[]) {
     return;
   }
 
-  await addPong(pingTxHash);
+  //If no txs are pending, attempt to send Pong immediately
+  if (!hasPending()) {
+    await sendPong(pingTxHash);
+  } else {
+    //Else, add to pending
+    await addOrUpdatePong({ pingTxHash });
+  }
+
   await setLastBlockRead(blockNumber);
 }
 

@@ -4,9 +4,11 @@ export enum PongStatus {
 }
 
 export interface PongState {
-  txHash?: string;
   status: PongStatus;
-  attempts: number;
+  retryAttempts: number;
+  txHash?: string;
+  submittedBlock?: number;
+  stuckNonce?: number;
 }
 
 export interface BotState {

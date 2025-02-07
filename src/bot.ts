@@ -1,6 +1,7 @@
 import { publicClient } from "./clients";
 import { loadState, getState, initializeBlocks } from "./state";
 import { processMissedEvents, startEventWatcher } from "./services/event";
+import { startTransactionProcessor } from "./services/transaction";
 
 async function main() {
   console.log("## STARTING BOT...");
@@ -9,8 +10,9 @@ async function main() {
   const currentBlock = await publicClient.getBlockNumber();
   await initializeBlocks(Number(currentBlock));
 
-  //Watch new events
+  //Start event watcher and tx processor
   await startEventWatcher(currentBlock);
+  startTransactionProcessor();
 
   const state = getState();
   console.log(`## STARTING BLOCK: ${state.startBlock}`);

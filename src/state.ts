@@ -42,27 +42,27 @@ export function hasPong(pingTxHash: `0x${string}`): boolean {
   return !!state.pending[pingTxHash];
 }
 
-export async function addPong(pingTxHash: `0x${string}`) {
-  state.pending[pingTxHash] = {
-    txHash: undefined,
-    status: PongStatus.PENDING,
-    attempts: 0,
-  };
-  await saveState();
+export function hasPending(): boolean {
+  return Object.keys(state.pending).length > 0;
 }
 
-export async function updatePong(
-  pingTxHash: `0x${string}`,
-  status: PongStatus,
-  pongTxHash?: `0x${string}`
-) {
-  if (!state.pending[pingTxHash]) {
-    throw new Error(`## NO PING FOUND FOR HASH: ${pingTxHash}`);
-  }
+interface AddOrUpdatePongParams {
+  pingTxHash: `0x${string}`;
+  pongTxHash?: `0x${string}`;
+  status?: PongStatus;
+  attempts?: number;
+  submittedBlock?: number;
+  stuckNonce?: number;
+}
 
-  state.pending[pingTxHash].txHash = pongTxHash;
-  state.pending[pingTxHash].status = status;
-  state.pending[pingTxHash].attempts++;
+export async function addOrUpdatePong(pongState: AddOrUpdatePongParams) {
+  state.pending[pongState.pingTxHash] = {
+    txHash: pongState.pongTxHash,
+    status: pongState.status ?? PongStatus.PENDING,
+    retryAttempts: pongState.attempts ?? 0,
+    submittedBlock: pongState.submittedBlock,
+    stuckNonce: pongState.stuckNonce,
+  };
   await saveState();
 }
 
