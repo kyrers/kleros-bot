@@ -110,10 +110,10 @@ async function checkTransaction(
       });
       return;
     }
-  } catch (error) {
+  } catch (_) {
     console.error(
-      `## ERROR LOOKING FOR THE PONG TX RECEIPT FOR PING ${pingTxHash}:`,
-      error
+      "## ERROR LOOKING FOR THE PONG TX RECEIPT FOR PING:",
+      pingTxHash
     );
     await checkIsTxStuck(pingTxHash, pongState);
   }
